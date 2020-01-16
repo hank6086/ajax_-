@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.1/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyDVQG5seFY2PWSxfSkweHI3oe2VDX37bq4",
+            authDomain: "ajax-586e2.firebaseapp.com",
+            databaseURL: "https://ajax-586e2.firebaseio.com",
+            projectId: "ajax-586e2",
+            storageBucket: "ajax-586e2.appspot.com",
+            messagingSenderId: "210257692735",
+            appId: "1:210257692735:web:136e2eb7bb83953bf4908a",
+            measurementId: "G-R48SYZV9PD"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#SignIn").click(function () {
+                var email = $('#email').val();
+                var password = $('#pwd').val();
+
+                firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // ...
+                    alert(errorMessage)
+                })
+            });
+            var userLogin;
+            firebase.auth().onAuthStateChanged(function (user) {
+                var email = $('#email').val();
+                var password = $('#pwd').val();
+
+                if (user) {
+                    userLogin = user;
+                    alert("User is logined")
+                    // var user = firebase.auth().currentUser;
+                    if (email != "" & password != "") {
+                        document.location.href = "/meg/"
+                        $.ajax({
+                            type: "GET",
+                            url: "/meg/",
+                            data: {
+                                "idname": email,
+                                "uid": user.uid
+                            },
+                            // dataType:"json",
+                            success: alert("django登入成功")
+                        })
+                    }
+
+                    // console.log(uid)
+                    document.getElementById("userID").innerHTML = "歡迎" + email
+
+                } else {
+                    userLogin = null;
+                    alert("User is not logined yet.");
+                }
+            });
+            $("#SignOut").click(function () {
+                firebase.auth().signOut().then(function () {
+                    document.getElementById("userID").innerHTML = "歡迎"
+                    console.log("User sign out!");
+                }, function (error) {
+                    console.log("User sign out error!");
+                })
+            });
+            $("#getUID").click(function () {
+                if (userLogin)
+                    alert(userLogin['uid']);
+            });
+            $("#SignUp").click(function () {
+                var email = $('#email').val();
+                var password = $('#pwd').val();
+
+
+                firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // ...
+                    alert(errorMessage)
+                }).then(function (error) {
+                    if (error.code != 400)
+                        var user = firebase.auth().currentUser;
+                        $.ajax({
+                            type: "GET",
+                            url: "/id_ap/",
+                            data: {
+                                "idname": email,
+                                "uid": user.uid
+                            },
+                            // dataType:"json",
+                            success: document.getElementById("uidtest").innerHTML = "{{ idname }}"
+                        })
+                        alert("成功創建用戶認證！");
+                });
+
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div style="width: 200px;height:100px;margin:150px auto;">
+        <div class="form-group">
+            <label for="exampleInputEmail1" name="name" placeholder="Email">帳號</label>
+            <input type="text" class="form-control" id="email">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1" name="password" placeholder="密碼">密碼</label>
+            <input type="password" class="form-control" id="pwd">
+        </div>
+        <button type="submit" class="btn btn-primary" id="SignIn">登入</button>
+        <button type="submit" class="btn btn-primary" id="SignUp">註冊</button>
+        <button type="submit" class="btn btn-primary" id="SignOut">登出</button>
+    </div>
+    <br>
+    <div style="margin-left: auto; margin-right: auto; text-align: center;">
+        <p id="userID">歡迎</p>
+        <p id="uidtest">
+            <p>
+    </div>
+    <!-- <script>
+        function AjaxSubmit_set() {
+            var data_list = [
+                { 'idname': 'chenchao', 'age':},
+                { 'name': 'lisi', 'age':},
+                { 'name': 'wangwu', 'age':}
+            ];
+            $.ajax({
+                url: "/id_ap/",
+                type: 'GET',
+                tradition: true,
+                data: { data: JSON.stringify(data_list) },
+                success: function (arg) {
+                }
+            });
+        }
+    </script> -->
+
+</body>
+
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <!-- <link href="css/freelancer.min.css" rel="stylesheet"> -->
+    <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="static/css/mycss.css" rel="stylesheet">
+    <link href="static/css/freelancer.css" rel="stylesheet">
+    <script src="static/vendor/jquery/jquery.min.js"></script>
+    <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="static/js/jqBootstrapValidation.js"></script>
+    <script src="static/js/contact_me.js"></script>
+    {% load static %}
+    <script src="static/js/freelancer.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    { % endload % }
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.1/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyDVQG5seFY2PWSxfSkweHI3oe2VDX37bq4",
+            authDomain: "ajax-586e2.firebaseapp.com",
+            databaseURL: "https://ajax-586e2.firebaseio.com",
+            projectId: "ajax-586e2",
+            storageBucket: "ajax-586e2.appspot.com",
+            messagingSenderId: "210257692735",
+            appId: "1:210257692735:web:136e2eb7bb83953bf4908a",
+            measurementId: "G-R48SYZV9PD"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+    <script>
+        function meg() {
+            document.getElementById('meg_box').innerHTML = "{{ textall|linebreaksbr }}"
+        }
+
+        $(document).ready(function() {
+            var userLogin;
+            // firebase.auth().onAuthStateChanged(function (user) {
+            //     if (user) {
+            //         userLogin = user;
+            //         alert("User is logined")
+            //     } else {
+            //         userLogin = null;
+            //         alert("User is not logined yet.");
+            //     }
+            // });
+            $("#SignOut").click(function() {
+                firebase.auth().signOut().then(function() {
+                    console.log("User sign out!");
+                    document.location.href = "/id_ap/"
+                }, function(error) {
+                    console.log("User sign out error!");
+                })
+            });
+            $("#TP").click(function() {
+                var megtext = $('#megtext').val();
+                var user = firebase.auth().currentUser;
+                $.ajax({
+                    type: "GET",
+                    url: "/add/",
+                    data: {
+                        "megtext": megtext,
+                        "uid": user.uid
+                    },
+                    // dataType:"json",
+                    success: function(data) {
+                        // var text_text = 
+                        // document.getElementById("meg_box").innerText = text_text
+                        $('#meg_box').html(data)
+                            // $('#meg_box').text("") "{{ textall|linebreaksbr }}"
+                    }
+
+                })
+            });
+        });
+    </script>
+
+</head>
+
+<body onload="meg()">
+    <!-- {% for test in stname%}
+    <p>{{ test }}</p> {% endfor %}
+    {% for test in number%}
+    <p>{{ test }}</p> {% endfor %}
+    {% for test in time%}
+    <p>{{ test }}</p> {% endfor %} -->
+    <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav" style="background-color: #2c3e50 !important">
+        <div class="container" style="background-color: #2c3e50">
+            <a class="navbar-brand js-scroll-trigger " href="#page-top" style="color: white;background-color: #2c3e50">ajax 期末</a>
+            <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded collapsed" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"
+                style="background-color: #1abc9c !important;color: white;">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-collapse collapse" id="navbarResponsive" style="color: #1abc9c">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item mx-0 mx-lg-1">
+                        <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact" style="color: #1abc9c;">找朋友</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="masthead bg-primary text-white text-center">
+        <div class="container d-flex align-items-center flex-column">
+            <p class="masthead-subheading font-weight-light mb-0">聊天室</p>
+            <button type="submit" class="btn btn-primary btn-sm" id="SignOut" style="background-color: #23272b; color: rgb(255, 255, 255);">登出</button>
+            <h1 class="masthead-heading text-uppercase mb-0"></h1>
+
+            <!-- Icon Divider -->
+
+
+            <!-- </div>
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="divider-custom-line"></div>
+        </div> -->
+
+            <!-- Masthead Subheading col-md-11  col-sm-11 col-xs-11 col-lg-11-->
+            <div class="container">
+                <div class="row">
+
+                </div>
+            </div>
+            <!-- Masthead Avatar Image  height: 20px; width: 250px!important; height:350px!important; widows: 628px !important;-->
+
+            <!-- <div style="height: 20px; width: 250px!important; margin:0px auto; "><input type="text" class="rounded"></input>
+                <button class="btn btn-dark btn-sm" style="float: right!important;">搜尋</button></div> -->
+
+            <p class="meg_box rounded" id="meg_box" style="text-align:left;"></p>
+            <div class="col-md-6.5  col-sm-6.5 col-xs-6.5 col-lg-6.5" style="margin:0px auto; "><input type="text" id="megtext" class="rounded"></input>
+                <button class="btn btn-dark btn-sm" style="float: right!important;" id="TP">傳送</button></div>
+        </div>
+    </header>
+
+
+    <section class="page-section" id="contact">
+        <div class="container">
+
+            <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">找朋友</h2>
+
+            <div class="divider-custom">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="divider-custom-line"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <form name="sentMessage" id="contactForm" novalidate="novalidate">
+                        <div class="control-group">
+                            <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                                <input class="form-control btn-sm" type="text" data-validation-required-message="Please enter your name.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <br>
+                        <div id="success"></div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-xs">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
+    <!-- <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-sm-3 col-md-3 col-lg-3"></div>
+            <div class="col-xl-6 col-sm-6 col-md-6 col-lg-6">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">帳號</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">密碼</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="col-xl-3 col-sm-3 col-md-3 col-lg-3"></div>
+        </div>
+    </div> -->
+
+
+</body>
+
+
+</html>
